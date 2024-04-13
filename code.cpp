@@ -42,7 +42,7 @@ public:
       }
       else
       {
-         cout << "no file with this name\n";
+         cout << "Error: no such student exists.\n";
       }
    }
 
@@ -261,7 +261,7 @@ void add_assignment(const string &s_name, const string &date)
         string deadline;
         getline(cin, deadline);
         
-        // Open the file in append mode
+        
         ofstream file(filename, ios::app);
         if (file.is_open())
         {
