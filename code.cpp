@@ -10,14 +10,19 @@ class IMG_Member
 protected:
    string name;
    string role;
-    time_t now = time(0);
-    tm *ltm = localtime(&now);
-     string date = std::to_string(1900 + ltm->tm_year) + "-" + std::to_string(1 + ltm->tm_mon) + "-" + std::to_string(ltm->tm_mday);
+ 
 public:
    IMG_Member(string name, string role) : name(name), role(role) {}
    
   virtual int give_choices()const =0;
   
+
+  string get_current_date(){
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+     string date = to_string(1900 + ltm->tm_year) + "-" + to_string(1 + ltm->tm_mon) + "-" + to_string(ltm->tm_mday);
+     return date;
+  }
      
  void view_assignment_status(string &s_name)
    {
@@ -67,7 +72,7 @@ cout << "3. Submit for recheck" << endl;
 
    
 
-void submit_for_recheck(string s_name){
+void submit_for_recheck(string s_name, string date){
     string line;
     string filename = s_name + ".txt";
     ifstream file(filename);
@@ -88,7 +93,7 @@ void submit_for_recheck(string s_name){
             tempFile << line << endl;
             if (line.find(assignment) != string::npos)
             {
-                tempFile << "Suggested iteration done " <<" on "<<this->date<< endl;
+                tempFile << "Suggested iteration done " <<" on "<< date << endl;
                 assignmentFound = true;
             }
         }
@@ -114,7 +119,7 @@ void submit_for_recheck(string s_name){
     }
 }
   
-   void submit_assignment(string s_name)
+   void submit_assignment(string s_name, string date)
    {
 
 
@@ -138,7 +143,7 @@ void submit_for_recheck(string s_name){
             tempFile << line << endl;
             if (line.find(assignment) != string::npos)
             {
-                tempFile << "Assignment submitted " <<" on "<<this->date<< endl;
+                tempFile << "Assignment submitted " <<" on "<< date << endl;
                 assignmentFound = true;
             }
         }
@@ -189,7 +194,7 @@ int choice;
 
 
 
-  void give_review(string &s_name) const
+  void give_review(string &s_name, string date) const
 {
     string line;
     string filename = s_name + ".txt";
@@ -213,7 +218,7 @@ int choice;
             tempFile << line << endl;
             if (line.find(assignment) != string::npos)
             {
-                tempFile << "Review: " << review <<" on "<<this->date<< endl;
+                tempFile << "Review: " << review <<" on "<<date<< endl;
                 assignmentFound = true;
             }
         }
@@ -239,25 +244,43 @@ int choice;
     }
 }
 
+void add_assignment(const string &s_name, const string &date)
+{
+    string filename = s_name + ".txt";
+    ifstream checkFile(filename);
+    
+    // Check if the file already exists (i.e., student exists)
+    if (checkFile)
+    {
+        cout << "Enter the name of assignment: ";
+        string assignment;
+        cin.ignore();
+        getline(cin, assignment);
+        
+        cout << "Enter Deadline: ";
+        string deadline;
+        getline(cin, deadline);
+        
+        // Open the file in append mode
+        ofstream file(filename, ios::app);
+        if (file.is_open())
+        {
+            file << "Assignment: " << assignment << " pending on " << date << endl;
+            file << "Deadline: " << deadline << endl;
+            cout << "Assignment added successfully\n";
+            file.close();
+        }
+        else
+        {
+            cout << "Error: Unable to open file\n";
+        }
+    }
+    else
+    {
+        cout << "Error: Student not found\n";
+    }
+}
 
- 
-   void add_assignment(string &s_name)
-   {
-       string filename = s_name + ".txt";
-      ofstream file(filename);
-      cout<<"Enter the name of assignment\n";
-      string assignment;
-      cin.ignore();
-      getline(cin,assignment);
-      cout<<"Enter Deadline\n";
-      string deadline;
-      cin.ignore();
-      getline(cin, deadline);
-      file<<assignment<<" pending on "<<this->date<<endl;
-      
-      file<<"Deadline : "<<deadline<<endl;
-
-   }
 
    void add_student(string &s_name)
    {
@@ -301,6 +324,8 @@ int choice;
          {
             cout << line << endl;
          }
+      }else{
+         cout<<"Error: no such student exists\n";
       }
    }
 };
@@ -310,6 +335,7 @@ int main()
 
    string name;
    int role;
+
 
 cout << "Choose your role:" << endl;
 cout << "1. Reviewer" << endl;
@@ -324,6 +350,7 @@ cout << "2. Student" << endl;
    if (role == 1)
    {
       Reviewer *r_one = new Reviewer(name);
+      string date = r_one->get_current_date();
      
       string s_name;
       char num;
@@ -340,7 +367,7 @@ cout << "2. Student" << endl;
       }
       else if (choice == 2)
       {
-         r_one->give_review(s_name);
+         r_one->give_review(s_name,date);
       }
       else if (choice == 3)
       {
@@ -348,7 +375,7 @@ cout << "2. Student" << endl;
       }else if(choice == 4){
          r_one->personal_info(s_name);
       }else if(choice==5){
-         r_one->add_assignment(s_name);
+         r_one->add_assignment(s_name,date);
       }
       else
       {
@@ -368,12 +395,12 @@ cout << "2. Student" << endl;
 
 
       int choice=s_one->give_choices();
-     
+     string date=s_one->get_current_date();
      
       
       if (choice == 1)
       {
-         s_one->submit_assignment(name);
+         s_one->submit_assignment(name, date);
       }
       else if (choice == 2)
       {
@@ -381,7 +408,7 @@ cout << "2. Student" << endl;
       }
       else if (choice == 3)
       {
-         s_one->submit_for_recheck(name);
+         s_one->submit_for_recheck(name, date);
       }
       else
       {
