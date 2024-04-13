@@ -230,6 +230,7 @@ int choice;
         {
             remove(filename.c_str());
             rename("temp.txt", filename.c_str());
+            remove("temp.txt");
             cout << "Review added successfully\n";
         }
         else
