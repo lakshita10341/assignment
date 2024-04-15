@@ -247,39 +247,10 @@ int choice;
 
 void add_assignment(const string &s_name, const string &date)
 {
-    string filename = s_name + ".txt";
-    ifstream checkFile(filename);
-    
-    // Check if the file already exists (i.e., student exists)
-    if (checkFile)
-    {
-        cout << "Enter the name of assignment: ";
-        string assignment;
-        cin.ignore();
-        getline(cin, assignment);
-        
-        cout << "Enter Deadline: ";
-        string deadline;
-        getline(cin, deadline);
-        
-        
-        ofstream file(filename, ios::app);
-        if (file.is_open())
-        {
-            file << "Assignment: " << assignment << " pending on " << date << endl;
-            file << "Deadline: " << deadline << endl;
-            cout << "Assignment added successfully\n";
-            file.close();
-        }
-        else
-        {
-            cout << "Error: Unable to open file\n";
-        }
-    }
-    else
-    {
-        cout << "Error: Student not found\n";
-    }
+
+   system("./find.sh");
+   
+ 
 }
 
 
@@ -308,7 +279,14 @@ void add_assignment(const string &s_name, const string &date)
       } while (!(choice == 1 || choice == 2));
       file << "1st year\n";
       file << "----------------------------\n";
-
+      string line;
+      ifstream assignment("ASSIGNMENT.txt");
+      if(file.is_open()&&assignment.is_open()){
+         while(getline(assignment,line)){
+            file<<line<<endl;
+         }
+      }
+      assignment.close();
       file.close();
    }
 
@@ -359,21 +337,30 @@ cout << "2. Student" << endl;
 
          int choice=r_one->give_choices();
 
-       
+    
+      if (choice == 1)
+      {   
       cout << "Enter the name of student\n";
       cin >> s_name;
-      if (choice == 1)
-      {
          r_one->view_assignment_status(s_name);
       }
       else if (choice == 2)
       {
+            
+      cout << "Enter the name of student\n";
+      cin >> s_name;
          r_one->give_review(s_name,date);
       }
       else if (choice == 3)
       {
+            
+      cout << "Enter the name of student\n";
+      cin >> s_name;
          r_one->add_student(s_name);
       }else if(choice == 4){
+            
+      cout << "Enter the name of student\n";
+      cin >> s_name;
          r_one->personal_info(s_name);
       }else if(choice==5){
          r_one->add_assignment(s_name,date);
