@@ -229,9 +229,13 @@ public:
                   tempFile << "Review: " << review << " on " << date << endl;
                }
                else
-               {
+               {  
+               
+                  tempFile<<"Reminder: Submit your assignment before deadline\n";
                   cout << "Assignment not submitted yet! You can't give review\n";
-                  r = 1;
+                  cout<<"Reminder sent!\n";
+                  
+
                }
                found = 0;
             }
